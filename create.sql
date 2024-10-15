@@ -8,7 +8,7 @@ USE Project;
 GO
 
 CREATE TABLE [User] (
-   computing_id VARCHAR(7) PRIMARY KEY CHECK (computing_id NOT LIKE '%[^a-zA-Z0-9]%' AND LEN(computing_id) >= 6),
+   computing_id VARCHAR(7) PRIMARY KEY CHECK (computing_id NOT LIKE '%[^a-zA-Z0-9]%' AND LEN(computing_id) >= 5 AND LEN(computing_id) <= 7),
    [name] VARCHAR(50),
    email VARCHAR(50) CHECK (email LIKE '%@virginia.edu'),
    phone_number VARCHAR(10)

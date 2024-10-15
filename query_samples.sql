@@ -1,50 +1,51 @@
--- Sample Queries --
-USE Project;
-GO
+--number of users who've recieved each type of badge
+SELECT b.[name], COUNT(u.computing_id) FROM User_Earns_Badge u 
+JOIN Badge b ON u.badge_id = b.badge_id 
+GROUP BY b.[name];
 
--- List Items by Category
-SELECT i.item_name, i.[description], c.category_name 
-FROM Item i
-JOIN Category c ON i.category_id = c.category_id;
-GO
+--number of items in each category
+SELECT c.category_name, COUNT(i.item_id) FROM Item i
+JOIN Category c ON i.category_id = c.category_id
+GROUP BY c.category_name;
 
--- Find All Found Items with Report Status
-SELECT fi.item_id, i.item_name, r.[status]
-FROM Found_Item fi
-JOIN Item i ON fi.item_id = i.item_id
-JOIN Found_Report r ON fi.item_id = r.item_id;
-GO
+--list of users and the number of found report's they have made
+SELECT u.computing_id, COUNT(fr.found_report_id) 
+FROM [User] u
+LEFT JOIN Found_Report fr ON u.computing_id = fr.computing_id
+GROUP BY u.computing_id, u.[name];
 
--- Find Users Who Have Earned Badges
-SELECT u.computing_id, u.[name], b.[name] AS BadgeName
-FROM User_Earns_Badge ueb
-JOIN [User] u ON ueb.computing_id = u.computing_id
-JOIN Badge b ON ueb.badge_id = b.badge_id;
-GO
+--list of users and the number of claim report's they have made
+SELECT u.computing_id, COUNT(c.claim_report_id) 
+FROM [User] u
+LEFT JOIN Claim_Report c ON u.computing_id = c.computing_id
+GROUP BY u.computing_id, u.[name];
 
--- Retrieve All Reports for a Specific User
-SELECT 'Found Report' AS ReportType, fr.found_report_id, fr.datetime_reported, fr.[status]
-FROM Found_Report fr
-WHERE fr.computing_id = 'abcd123'
-UNION ALL
-SELECT 'Claim Report' AS ReportType, cr.claim_report_id, cr.datetime_reported, cr.[status]
-FROM Claim_Report cr
-WHERE cr.computing_id = 'abcd123';
-GO
+--users who have lost an item and the number of items they've lost
+SELECT u.computing_id, COUNT(l.item_id) AS lost_item_count
+FROM [User] u INNER JOIN 
+(SELECT l.item_id, i.reporter_id FROM Lost_Item l INNER JOIN Item i ON l.item_id = i.item_id) 
+AS l ON u.computing_id = l.reporter_id 
+GROUP BY u.computing_id;
 
--- Update User's Phone Number
-UPDATE [User]
-SET phone_number = '9876543210'
-WHERE computing_id = 'abcd123';
-GO
+--users who have found an item and the number of items they've found
+SELECT u.computing_id, COUNT(f.item_id) AS found_item_count
+FROM [User] u INNER JOIN 
+(SELECT f.item_id, i.reporter_id FROM Found_Item f INNER JOIN Item i ON f.item_id = i.item_id) 
+AS f ON u.computing_id = f.reporter_id 
+GROUP BY u.computing_id;
 
--- Delete a Found Report
-DELETE FROM Found_Report
-WHERE found_report_id = 1; -- Specify the report ID to delete
-GO
+--number of found reports for each status
+SELECT [status], COUNT(*) AS report_count
+FROM Found_Report GROUP BY [status];
 
--- List All Banned Users
-SELECT u.computing_id, u.[name], ab.admin_id, ab.reason
-FROM Admin_Bans ab
-JOIN [User] u ON ab.banned_id = u.computing_id;
-GO
+--number of claim reports for each status
+SELECT [status], COUNT(*) AS report_count
+FROM Claim_Report GROUP BY [status];
+
+--table of banned users and why they were banned
+SELECT u.computing_id, u.[name],  b.reason FROM Admin_Bans b
+JOIN [User] u ON b.banned_id = u.computing_id;
+
+--table of removed item posts and why they were removed
+SELECT i.item_id, i.item_name,  r.reason FROM Admin_Removes r
+JOIN [Item] i ON r.item_id = i.item_id;
