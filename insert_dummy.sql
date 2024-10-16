@@ -107,10 +107,27 @@ INSERT INTO Item (item_name, [description], [location], reporter_id, category_id
 ('Montblanc Pen', 'Found Montblanc pen', 'Garrett Hall', 'umz4re', 4, NULL),
 ('Wool Socks', 'Lost pair of wool socks', 'Dorm Laundry Room', 'abc0fde', 3, NULL),
 ('Lab Coat', 'Found white lab coat', 'Chemistry Lab', 'xyz1qwe', 3, NULL),
-('Math Textbook', 'Lost Advanced Mathematics textbook', 'Mathematics Building', 'ijk2gfh', 4, NULL);
+('Math Textbook', 'Lost Advanced Mathematics textbook', 'Mathematics Building', 'ijk2gfh', 4, NULL),
+('Keychain', 'Found keychain with several keys and a mini flashlight', 'Scott Stadium', 'def8abc', 7, NULL),
+('Scarf', 'Found red scarf', 'Bus Stop', 'def8abc', 3, NULL),
+('Ring', 'Found ring with inscription', 'Chapel', 'def8abc', 8, NULL),
+('Earrings', 'Found pearl earrings', 'Madison Hall', 'def8abc', 8, NULL),
+('Bracelet', 'Found gold bracelet near the fountain', 'Amphitheater', 'def8abc', 8, NULL),
+('Bike Helmet', 'Found white bike helmet near bike racks', 'O-Hill', 'ghi9def', 9, NULL),
+('Tablet', 'Found Samsung tablet', 'Thornton Hall', 'ghi9def', 2, NULL),
+('Water Bottle', 'Found blue Hydro Flask water bottle', 'Engineering Quad', 'ghi9def', 5, NULL),
+('Novel', 'Found personal copy of "The Great Gatsby"', 'South Lawn', 'ghi9def', 4, NULL),
+('USB Drive', 'Found 32GB USB drive', 'Clemons Library', 'ghi9def', 2, NULL),
+('Hydroflask', 'my dark blue hydroflask!', 'E-Way', 'pqr2mno', 5, NULL),
+('Black Wallet', 'My student id is in my black wallet', 'Newcomb', 'pqr2mno', 6, NULL),
+('Calculator', 'Lost TI-84 calculator', 'Physics Building', 'pqr2mno', 4, NULL);
+
+
+
 
 INSERT INTO Found_Item (item_id) VALUES
-(1), (2), (4), (5), (6), (8), (10), (11), (13), (15), (16), (18), (20), (21), (22), (24), (26), (27), (29), (30), (31), (32), (34), (35), (37), (38), (40), (41), (43), (45);
+(1), (2), (4), (5), (6), (8), (10), (11), (13), (15), (16), (18), (20), (21), (22), (24), (26), (27), (29), (30), (31), (32), (34), (35), (37), (38), (40), (41), (43), (45),
+(46), (47), (48), (49), (50), (51), (52), (53), (54), (55);
 
 INSERT INTO Lost_Item (item_id, compensation) VALUES
 (3, 'Reward: $20'), 
@@ -127,9 +144,12 @@ INSERT INTO Lost_Item (item_id, compensation) VALUES
 (36, 'Reward: $5'), 
 (39, 'Reward: $30'), 
 (42, 'Reward: $25'), 
-(44, 'Reward: $10');
+(44, 'Reward: $10'),
+(56, 'Sabrina Carpenter Tickets'),
+(57, 'UVA Sweatshirt'),
+(58, 'Rolex');
 
--- Insert dummy admins based on existing users
+
 INSERT INTO Admin (computing_id, permissions) VALUES
 ('fpv5gx', 'All'),
 ('umz4re', 'Remove'),
@@ -162,11 +182,11 @@ INSERT INTO User_Earns_Badge(computing_id, badge_id) VALUES
 ('vwx5opq', 1),
 ('yzx6rst', 1),
 ('abc7xyz', 1),
-('def8abc', 2),
-('ghi9def', 2),
+('def8abc', 3),
+('ghi9def', 5),
 ('jkl0ghi', 1),
 ('mno1jkl', 1),
-('pqr2mno', 4),
+('pqr2mno', 1),
 ('stu3pqr', 1),
 ('vwx4stu', 1),
 ('yzx5vwx', 1),
@@ -180,15 +200,37 @@ INSERT INTO User_Earns_Badge(computing_id, badge_id) VALUES
 ('abc4xyz', 1),
 ('def5abc', 1),
 ('ghi6def', 1),
-('jkl7ghi', 3),
+('jkl7ghi', 1),
 ('mno8jkl', 1),
 ('pqr9mno', 1),
 ('stu0pqr', 1),
 ('vwx1stu', 1),
-('yzx2vwx', 5),
+('yzx2vwx', 1),
 ('abc3xyz', 1),
 ('ghi5def', 1),
 ('jkl6ghi', 1),
 ('mno7jkl', 1),
 ('pqr8mno', 1),
 ('stu9pqr', 1);
+
+INSERT INTO Found_Report (item_id, computing_id, [status]) VALUES
+(3, 'yzx2vwx', 'Pending'), 
+(7, 'mno8jkl', 'Pending'), 
+(9, 'pqr8mno', 'Pending'), 
+(12, 'vwx1stu', 'Claimed'), 
+(14, 'ghi6def', 'Reunited'), 
+(17, 'vwx3stu', 'Pending'),
+(58, 'jkl7ghi', 'Reunited');
+
+
+INSERT INTO Claim_Report (item_id, computing_id, [status]) VALUES
+(2, 'fpv5gx', 'Pending'),  
+(4, 'umz4re', 'Pending'),   
+(6, 'abc0fde', 'Pending'),  
+(8, 'xyz1qwe', 'Claimed'),   
+(10, 'ijk2gfh', 'Pending')
+(1, 'pqr2mno', 'Reunited'),
+(52, 'pqr2mno', 'Reunited'),
+(54, 'yzx2vwx', 'Reunited'),
+(57, 'yzx2vwx', 'Reunited'),
+(51, 'yzx2vwx', 'Reunited');
