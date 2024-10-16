@@ -1,3 +1,5 @@
+USE Project;
+GO
 --number of users who've recieved each type of badge
 SELECT b.[name], COUNT(u.computing_id) FROM User_Earns_Badge u 
 JOIN Badge b ON u.badge_id = b.badge_id 
