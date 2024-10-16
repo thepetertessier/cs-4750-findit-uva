@@ -2,13 +2,19 @@ USE Project;
 GO
 
 --number of users who've recieved each type of badge
-SELECT b.[name], COUNT(u.computing_id) AS total_users FROM User_Earns_Badge u 
-JOIN Badge b ON u.badge_id = b.badge_id 
+SELECT b.[name], COUNT(u.computing_id) AS total_users
+FROM Badge b, User_Earns_Badge u 
+WHERE b.badge_id IN (
+    SELECT u.badge_id
+)
 GROUP BY b.[name];
 
 --number of items in each category
-SELECT c.category_name, COUNT(i.item_id) AS total_items FROM Item i
-JOIN Category c ON i.category_id = c.category_id
+SELECT c.category_name, COUNT(i.item_id) AS total_items
+FROM Category c, Item i
+WHERE c.category_id IN (
+    SELECT i.category_id
+)
 GROUP BY c.category_name;
 
 --list of users and the number of found report's they have made
