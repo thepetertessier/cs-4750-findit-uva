@@ -228,7 +228,7 @@ INSERT INTO Claim_Report (item_id, computing_id, [status]) VALUES
 (4, 'umz4re', 'Pending'),   
 (6, 'abc0fde', 'Pending'),  
 (8, 'xyz1qwe', 'Claimed'),   
-(10, 'ijk2gfh', 'Pending')
+(10, 'ijk2gfh', 'Pending'),
 (1, 'pqr2mno', 'Reunited'),
 (52, 'pqr2mno', 'Reunited'),
 (54, 'yzx2vwx', 'Reunited'),
