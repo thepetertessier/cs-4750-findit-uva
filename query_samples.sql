@@ -76,3 +76,34 @@ JOIN Found_Item f ON i.item_id = f.item_id
 GROUP BY u.computing_id, u.name
 ORDER BY found_item_count DESC;
 
+-- sort name and image of lost items by category
+SELECT i.item_name, i.image, i.description
+FROM [Item] i
+WHERE i.item_id IN 
+    (SELECT item_id FROM Lost_Item)
+ORDER BY category_id
+
+-- get number of reunited items from the reports by a certain user yzx2vwx
+SELECT i.item_name, i.image
+FROM [Item] i
+WHERE i.item_id IN
+    (SELECT item_id FROM Found_Report WHERE computing_id = 'yzx2vwx' and [status] = 'Reunited')
+OR i.item_id IN
+    (SELECT item_id FROM Claim_Report WHERE computing_id = 'yzx2vwx' and [status] = 'Reunited')
+
+-- get name of users with reunited items from the claim reports
+SELECT u.name, 
+    (SELECT COUNT(computing_id) 
+    FROM Claim_report cr
+    WHERE cr.status = 'Reunited' AND cr.computing_id = u.computing_id 
+    GROUP BY computing_id) AS items_reunited_with
+FROM [User] u
+WHERE 
+    (SELECT COUNT(computing_id) 
+    FROM Claim_report cr
+    WHERE cr.status = 'Reunited' AND cr.computing_id = u.computing_id) > 0
+
+
+
+
+-- 
