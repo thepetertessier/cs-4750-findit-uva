@@ -56,7 +56,6 @@ BEGIN
     INSERT INTO Item (item_name, [description], [location], reporter_id, category_id, [image]) 
     VALUES (@item_name, @description, @location, @reporter_id, @category_id, @image);
 
-    -- Get the ID of the newly created item
     SET @item_id = SCOPE_IDENTITY();
 END
 GO
@@ -73,21 +72,41 @@ GO
 --     @image = NULL,
 --     @item_id = @new_item_id OUTPUT;  -- Passing the output parameter
 
--- -- Now @new_item_id holds the ID of the newly created item
 -- SELECT @new_item_id AS NewItemId;
 
-
 --Procedure 3: Insert a New Found Report
--- CREATE PROCEDURE NewFoundReport
---     @item_id INT,
---     @computing_id VARCHAR(7),
---     @[status] VARCHAR(20),
--- AS BEGIN
--- INSERT INTO Found_Report (item_id, computing_id, [status])
--- VALUES (@item_id, @computing_id, @[status])
--- END;
+IF OBJECT_ID('dbo.NewFoundReport', 'P') IS NOT NULL
+BEGIN
+    DROP PROCEDURE dbo.NewFoundReport;
+END
+GO
 
--- --Procedure 4: Insert a New Claim Report
+CREATE PROCEDURE NewFoundReport
+    @item_id INT,
+    @computing_id VARCHAR(7),
+    @status VARCHAR(20),
+    @report_id INT OUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO Found_Report (item_id, computing_id, [status])
+    VALUES (@item_id, @computing_id, @status);
+
+    SET @report_id = SCOPE_IDENTITY();
+END
+GO
+
+-- DECLARE @new_report_id INT;
+
+-- EXEC NewFoundReport 
+--     @item_id = 1,
+--     @computing_id = 'CS1234',
+--     @status = 'Found';
+
+-- SELECT @new_report_id AS NewFoundReport;
+
+--Procedure 4: Insert a New Claim Report
 -- CREATE PROCEDURE NewClaimReport
 --     @item_id INT,
 --     @computing_id VARCHAR(7),
