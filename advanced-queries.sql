@@ -102,39 +102,118 @@ GO
 -- EXEC NewFoundReport 
 --     @item_id = 1,
 --     @computing_id = 'CS1234',
---     @status = 'Found';
+--     @status = 'Found',
+--     @report_id = @new_report_id OUTPUT;
 
 -- SELECT @new_report_id AS NewFoundReport;
 
 --Procedure 4: Insert a New Claim Report
--- CREATE PROCEDURE NewClaimReport
---     @item_id INT,
---     @computing_id VARCHAR(7),
---     @[status] VARCHAR(20),
--- AS BEGIN
--- INSERT INTO Claim_Report (item_id, computing_id, [status])
--- VALUES (@item_id, @computing_id, @[status])
--- END;
+IF OBJECT_ID('dbo.NewClaimReport', 'P') IS NOT NULL
+BEGIN
+    DROP PROCEDURE dbo.NewClaimReport;
+END
+GO
 
--- --Procedure 5: Update Status in Found Report
--- CREATE PROCEDURE UpdateStatusinFound
---     @found_report_id INT,
---     @[status] VARCHAR(20)
--- AS BEGIN
--- UPDATE Found_Report
--- SET [status] = @[status]
--- WHERE found_report_id = @found_report_id;
--- END;
+CREATE PROCEDURE NewClaimReport
+    @item_id INT,
+    @computing_id VARCHAR(7),
+    @status VARCHAR(20),
+    @report_id INT OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
 
--- --Procedure 6: Update Status in Claim Report
--- CREATE PROCEDURE UpdateStatusinClaim
---     @claim_report_id INT,
---     @[status] VARCHAR(20)
--- AS BEGIN
--- UPDATE Claim_Report
--- SET [status] = @[status]
--- WHERE claim_report_id = @claim_report_id;
--- END;
+    INSERT INTO Claim_Report (item_id, computing_id, [status])
+    VALUES (@item_id, @computing_id, @status);
+
+    SET @report_id = SCOPE_IDENTITY();
+END
+GO
+
+-- Example usage:
+-- DECLARE @new_report_id INT;
+
+-- EXEC NewClaimReport 
+--     @item_id = 1, 
+--     @computing_id = 'CS1234', 
+--     @status = 'Pending',
+--     @report_id = @new_report_id OUTPUT;
+
+-- SELECT @new_report_id AS NewReportId;
+
+--Procedure 5: Update Status in Found Report
+IF OBJECT_ID('dbo.UpdateStatusinFound', 'P') IS NOT NULL
+BEGIN
+    DROP PROCEDURE dbo.UpdateStatusinFound;
+END
+GO
+
+CREATE PROCEDURE UpdateStatusinFound
+    @found_report_id INT,
+    @status VARCHAR(20),
+    @success BIT OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE Found_Report
+    SET [status] = @status
+    WHERE found_report_id = @found_report_id;
+
+    -- Indicate success if the row was updated
+    IF @@ROWCOUNT > 0
+        SET @success = 1;
+    ELSE
+        SET @success = 0;
+END
+GO
+
+-- Example usage:
+-- DECLARE @update_success BIT;
+
+-- EXEC UpdateStatusinFound 
+--     @found_report_id = 1, 
+--     @status = 'Claimed',
+--     @success = @update_success OUTPUT;
+
+-- SELECT @update_success AS UpdateSuccess;
+
+--Procedure 6: Update Status in Claim Report
+IF OBJECT_ID('dbo.UpdateStatusinClaim', 'P') IS NOT NULL
+BEGIN
+    DROP PROCEDURE dbo.UpdateStatusinClaim;
+END
+GO
+
+CREATE PROCEDURE UpdateStatusinClaim
+    @claim_report_id INT,
+    @status VARCHAR(20),
+    @success BIT OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE Claim_Report
+    SET [status] = @status
+    WHERE claim_report_id = @claim_report_id;
+
+    -- Indicate success if the row was updated
+    IF @@ROWCOUNT > 0
+        SET @success = 1;
+    ELSE
+        SET @success = 0;
+END
+GO
+
+-- Example usage
+-- DECLARE @update_success BIT;
+
+-- EXEC UpdateStatusinClaim 
+--     @claim_report_id = 1, 
+--     @status = 'Resolved',
+--     @success = @update_success OUTPUT;
+
+-- SELECT @update_success AS UpdateSuccess;
 
 --Function 1:
 
