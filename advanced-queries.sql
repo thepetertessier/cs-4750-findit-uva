@@ -34,10 +34,34 @@ VALUES (@item_id, @computing_id, @[status])
 END;
 
 --Procedure 4: Insert a New Claim Report
+CREATE PROCEDURE NewClaimReport
+    @item_id INT,
+    @computing_id VARCHAR(7),
+    @[status] VARCHAR(20),
+AS BEGIN
+INSERT INTO Claim_Report (item_id, computing_id, [status])
+VALUES (@item_id, @computing_id, @[status])
+END;
 
 --Procedure 5: Update Status in Found Report
+CREATE PROCEDURE UpdateStatusinFound
+    @found_report_id INT,
+    @[status] VARCHAR(20)
+AS BEGIN
+UPDATE Found_Report
+SET [status] = @[status]
+WHERE found_report_id = @found_report_id;
+END;
 
 --Procedure 6: Update Status in Claim Report
+CREATE PROCEDURE UpdateStatusinClaim
+    @claim_report_id INT,
+    @[status] VARCHAR(20)
+AS BEGIN
+UPDATE Claim_Report
+SET [status] = @[status]
+WHERE claim_report_id = @claim_report_id;
+END;
 
 --Function 1:
 
