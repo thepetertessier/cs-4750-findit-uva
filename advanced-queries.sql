@@ -10,7 +10,7 @@ VALUES (@computing_id, @[name], @email, @phone_number);
 END;
 
 --Procedure 2: Insert a New Item
-CREATE PROCEDURE NewItem
+CREATE PROCEDURE AddItem
     @item_name VARCHAR(100),
     @[description] VARCHAR(MAX),
     @[location] VARCHAR(255),
@@ -24,7 +24,7 @@ END;
 
 
 --Procedure 3: Insert a New Found Report
-CREATE PROCEDURE NewFoundReport
+CREATE PROCEDURE AddFoundReport
     @item_id INT,
     @computing_id VARCHAR(7),
     @[status] VARCHAR(20),
@@ -34,7 +34,7 @@ VALUES (@item_id, @computing_id, @[status])
 END;
 
 --Procedure 4: Insert a New Claim Report
-CREATE PROCEDURE NewClaimReport
+CREATE PROCEDURE AddClaimReport
     @item_id INT,
     @computing_id VARCHAR(7),
     @[status] VARCHAR(20),
