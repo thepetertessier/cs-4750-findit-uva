@@ -220,3 +220,72 @@ GO
 --Function 2:
 
 --Function 3:
+
+
+--View 1a
+CREATE FoundReportView AS
+SELECT 
+    i.item_name,
+    u.name,
+    u.email,
+    u.phone_number,
+    r.datetime_reported, 
+    r.status
+FROM
+Found_Report r
+JOIN Item i on i.item_id = r.item_id
+JOIN User u on u.computing_id = r.computing_id;
+
+--View 1b
+CREATE ClaimReportView AS
+SELECT 
+    i.item_name,
+    u.name,
+    u.email,
+    u.phone_number,
+    r.datetime_reported, 
+    r.status
+FROM
+Claim_Report r
+JOIN Item i on i.item_id = r.item_id
+JOIN User u on u.computing_id = r.computing_id;
+
+
+--View 2a
+CREATE LostItemView AS
+SELECT
+    i.item_name,
+    i.description,
+    i.location,
+    i.datetime_posted,
+    c.category_name,
+    i.image,
+    l.compensation
+FROM Item i 
+JOIN Category c ON c.category_id = i.category_id
+JOIN Lost_Item l ON l.item_id = i.item_id;
+
+--View 2b
+CREATE FoundItemView AS
+SELECT
+    i.item_name,
+    i.description,
+    i.location,
+    i.datetime_posted,
+    i.image,
+    c.category_name
+FROM Item i 
+JOIN Category c ON c.category_id = i.category_id
+JOIN Found_Item fi ON fi.item_id = i.item_id;
+
+--View 3
+CREATE UserProfile AS 
+SELECT
+    u.name,
+    u.email,
+    u.phone_number,
+    b.name AS badge_name,
+    b.icon
+FROM User u
+LEFT JOIN User_Earns_Badge ub ON ub.computing_id = u.computing_id
+LEFT JOIN Badge b ON b.badge_id = ub.badge_id;
