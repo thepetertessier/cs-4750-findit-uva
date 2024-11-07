@@ -298,7 +298,18 @@ FROM [User] u
 LEFT JOIN User_Earns_Badge ub ON ub.computing_id = u.computing_id
 LEFT JOIN Badge b ON b.badge_id = ub.badge_id;
 
---Trigger
 
+--Trigger
+GO
+CREATE TRIGGER trg_AfterInsertItem
+ON Item
+AFTER INSERT
+AS
+BEGIN
+    INSERT INTO Item_Log (item_id, [action])
+    SELECT i.item_id, "New item added"
+    FROM INSERTED i;
+END;
 
 --Encryption
+

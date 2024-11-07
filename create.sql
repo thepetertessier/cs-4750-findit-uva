@@ -135,6 +135,6 @@ CREATE TABLE User_Earns_Badge (
 CREATE TABLE Item_Log (
    item_log_id INT IDENTITY(1,1) PRIMARY KEY,
    item_id INT,
-   action NVARCHAR(50),
+   [action] NVARCHAR(50),
    action_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 );
