@@ -225,7 +225,10 @@ GO
 
 
 --View 1a
+IF OBJECT_ID('dbo.FoundReportView', 'V') IS NOT NULL
+    DROP VIEW dbo.FoundReportView;
 GO
+
 CREATE VIEW FoundReportView AS
 SELECT 
     i.item_name,
@@ -238,10 +241,13 @@ FROM
 Found_Report r
 JOIN Item i on i.item_id = r.item_id
 JOIN [User] u on u.computing_id = r.computing_id;
-
+GO
 
 --View 1b
+IF OBJECT_ID('dbo.ClaimReportView', 'V') IS NOT NULL
+    DROP VIEW dbo.ClaimReportView;
 GO
+
 CREATE VIEW ClaimReportView AS
 SELECT 
     i.item_name,
@@ -254,10 +260,13 @@ FROM
 Claim_Report r
 JOIN Item i on i.item_id = r.item_id
 JOIN [User] u on u.computing_id = r.computing_id;
-
+GO
 
 --View 2a
+IF OBJECT_ID('dbo.LostItemView', 'V') IS NOT NULL
+    DROP VIEW dbo.LostItemView;
 GO
+
 CREATE VIEW LostItemView AS
 SELECT
     i.item_name,
@@ -270,9 +279,13 @@ SELECT
 FROM Item i 
 JOIN Category c ON c.category_id = i.category_id
 JOIN Lost_Item l ON l.item_id = i.item_id;
+GO
 
 --View 2b
+IF OBJECT_ID('dbo.FoundItemView', 'V') IS NOT NULL
+    DROP VIEW dbo.FoundItemView;
 GO
+
 CREATE VIEW FoundItemView AS
 SELECT
     i.item_name,
@@ -284,9 +297,13 @@ SELECT
 FROM Item i 
 JOIN Category c ON c.category_id = i.category_id
 JOIN Found_Item fi ON fi.item_id = i.item_id;
+GO
 
 --View 3
+IF OBJECT_ID('dbo.UserProfile', 'V') IS NOT NULL
+    DROP VIEW dbo.UserProfile;
 GO
+
 CREATE VIEW UserProfile AS 
 SELECT
     u.name,
@@ -297,19 +314,72 @@ SELECT
 FROM [User] u
 LEFT JOIN User_Earns_Badge ub ON ub.computing_id = u.computing_id
 LEFT JOIN Badge b ON b.badge_id = ub.badge_id;
+GO
 
 
 --Trigger
+IF OBJECT_ID('trg_AfterInsertItem', 'TR') IS NOT NULL
+    DROP TRIGGER trg_AfterInsertItem
 GO
+
 CREATE TRIGGER trg_AfterInsertItem
 ON Item
 AFTER INSERT
 AS
 BEGIN
     INSERT INTO Item_Log (item_id, [action])
-    SELECT i.item_id, "New item added"
+    SELECT i.item_id, 'New item added'
     FROM INSERTED i;
 END;
+GO
 
 --Encryption
+IF EXISTS (SELECT * FROM sys.symmetric_keys WHERE name = 'PhoneKey')
+    DROP SYMMETRIC KEY PhoneKey;
+
+IF EXISTS (SELECT * FROM sys.certificates WHERE name = 'PhoneCert')
+    DROP CERTIFICATE PhoneCert;
+
+IF EXISTS (SELECT * FROM sys.key_encryptions WHERE key_id = (SELECT key_id FROM sys.symmetric_keys WHERE name = '##MS_DatabaseMasterKey##'))
+    DROP MASTER KEY;
+
+-- create the master key
+CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'ThomasJefferson';
+
+-- create certificate and symmetric key
+CREATE CERTIFICATE PhoneCert WITH SUBJECT = 'Certificate for phone number encryption';
+
+CREATE SYMMETRIC KEY PhoneKey
+WITH ALGORITHM = AES_256
+ENCRYPTION BY CERTIFICATE PhoneCert;
+
+-- open the symmetric key
+OPEN SYMMETRIC KEY PhoneKey
+DECRYPTION BY CERTIFICATE PhoneCert;
+
+-- encrypt and update the email column
+UPDATE [User]
+SET phone_number = ENCRYPTBYKEY(Key_GUID('PhoneKey'), phone_number);
+
+-- close the symmetric key
+CLOSE SYMMETRIC KEY PhoneKey;
+
+
+-- INSERT encrypted email
+OPEN SYMMETRIC KEY PhoneKey
+DECRYPTION BY CERTIFICATE PhoneCert;
+
+INSERT INTO [User] (computing_id, [name], email, phone_number)
+VALUES ('how8ar', 'John Doe', 'how8ar@virginia.edu', ENCRYPTBYKEY(Key_GUID('PhoneKey'), '5738483475'))
+
+CLOSE SYMMETRIC KEY PhoneKey;
+
+-- RETRIEVE user email
+OPEN SYMMETRIC KEY PhoneKey
+DECRYPTION BY CERTIFICATE PhoneCert;
+
+SELECT computing_id, [name], email, CONVERT(VARCHAR(MAX), DECRYPTBYKEY(phone_number)) AS phone_numer
+FROM [User];
+
+CLOSE SYMMETRIC KEY PhoneKey;
 
