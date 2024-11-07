@@ -1,11 +1,27 @@
-DROP DATABASE Project;
-GO
-CREATE DATABASE Project;
-GO
+-- DROP DATABASE Project;
+-- GO
+-- CREATE DATABASE Project;
+-- GO
 
 
 USE Project;
 GO
+
+
+-- Drop tables if they already exist to ensure a fresh start
+IF OBJECT_ID('Admin_Removes', 'U') IS NOT NULL DROP TABLE Admin_Removes;
+IF OBJECT_ID('Admin_Bans', 'U') IS NOT NULL DROP TABLE Admin_Bans;
+IF OBJECT_ID('User_Earns_Badge', 'U') IS NOT NULL DROP TABLE User_Earns_Badge;
+IF OBJECT_ID('Claim_Report', 'U') IS NOT NULL DROP TABLE Claim_Report;
+IF OBJECT_ID('Found_Report', 'U') IS NOT NULL DROP TABLE Found_Report;
+IF OBJECT_ID('Admin', 'U') IS NOT NULL DROP TABLE Admin;
+IF OBJECT_ID('Lost_Item', 'U') IS NOT NULL DROP TABLE Lost_Item;
+IF OBJECT_ID('Found_Item', 'U') IS NOT NULL DROP TABLE Found_Item;
+IF OBJECT_ID('Item', 'U') IS NOT NULL DROP TABLE Item;
+IF OBJECT_ID('User', 'U') IS NOT NULL DROP TABLE [User];
+IF OBJECT_ID('Category', 'U') IS NOT NULL DROP TABLE Category;
+IF OBJECT_ID('Badge', 'U') IS NOT NULL DROP TABLE Badge;
+
 
 CREATE TABLE [User] (
    computing_id VARCHAR(7) PRIMARY KEY CHECK (computing_id NOT LIKE '%[^a-zA-Z0-9]%' AND LEN(computing_id) >= 5 AND LEN(computing_id) <= 7),

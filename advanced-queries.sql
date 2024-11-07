@@ -234,7 +234,7 @@ SELECT
 FROM
 Found_Report r
 JOIN Item i on i.item_id = r.item_id
-JOIN User u on u.computing_id = r.computing_id;
+JOIN [User] u on u.computing_id = r.computing_id;
 
 --View 1b
 CREATE ClaimReportView AS
@@ -248,7 +248,7 @@ SELECT
 FROM
 Claim_Report r
 JOIN Item i on i.item_id = r.item_id
-JOIN User u on u.computing_id = r.computing_id;
+JOIN [User] u on u.computing_id = r.computing_id;
 
 
 --View 2a
@@ -286,6 +286,11 @@ SELECT
     u.phone_number,
     b.name AS badge_name,
     b.icon
-FROM User u
+FROM [User] u
 LEFT JOIN User_Earns_Badge ub ON ub.computing_id = u.computing_id
 LEFT JOIN Badge b ON b.badge_id = ub.badge_id;
+
+--Trigger
+
+
+--Encryption
