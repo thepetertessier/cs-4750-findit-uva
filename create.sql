@@ -21,6 +21,7 @@ IF OBJECT_ID('Item', 'U') IS NOT NULL DROP TABLE Item;
 IF OBJECT_ID('User', 'U') IS NOT NULL DROP TABLE [User];
 IF OBJECT_ID('Category', 'U') IS NOT NULL DROP TABLE Category;
 IF OBJECT_ID('Badge', 'U') IS NOT NULL DROP TABLE Badge;
+IF OBJECT_ID('Item_Log', 'U') IS NOT NULL DROP TABLE Item_Log;
 
 
 CREATE TABLE [User] (
@@ -128,4 +129,12 @@ CREATE TABLE User_Earns_Badge (
    PRIMARY KEY (computing_id, badge_id), -- Added composite primary key
    FOREIGN KEY (computing_id) REFERENCES [User](computing_id),
    FOREIGN KEY (badge_id) REFERENCES Badge(badge_id)
+);
+
+
+CREATE TABLE Item_Log (
+   item_log_id INT IDENTITY(1,1) PRIMARY KEY,
+   item_id INT,
+   action NVARCHAR(50),
+   action_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 );
