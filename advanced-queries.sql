@@ -1,3 +1,5 @@
+USE Project;
+
 --Procedure 1: Insert a New User
 IF OBJECT_ID('dbo.AddUser', 'P') IS NOT NULL
 BEGIN
@@ -223,7 +225,8 @@ GO
 
 
 --View 1a
-CREATE FoundReportView AS
+GO
+CREATE VIEW FoundReportView AS
 SELECT 
     i.item_name,
     u.name,
@@ -236,8 +239,10 @@ Found_Report r
 JOIN Item i on i.item_id = r.item_id
 JOIN [User] u on u.computing_id = r.computing_id;
 
+
 --View 1b
-CREATE ClaimReportView AS
+GO
+CREATE VIEW ClaimReportView AS
 SELECT 
     i.item_name,
     u.name,
@@ -252,7 +257,8 @@ JOIN [User] u on u.computing_id = r.computing_id;
 
 
 --View 2a
-CREATE LostItemView AS
+GO
+CREATE VIEW LostItemView AS
 SELECT
     i.item_name,
     i.description,
@@ -266,7 +272,8 @@ JOIN Category c ON c.category_id = i.category_id
 JOIN Lost_Item l ON l.item_id = i.item_id;
 
 --View 2b
-CREATE FoundItemView AS
+GO
+CREATE VIEW FoundItemView AS
 SELECT
     i.item_name,
     i.description,
@@ -279,7 +286,8 @@ JOIN Category c ON c.category_id = i.category_id
 JOIN Found_Item fi ON fi.item_id = i.item_id;
 
 --View 3
-CREATE UserProfile AS 
+GO
+CREATE VIEW UserProfile AS 
 SELECT
     u.name,
     u.email,
