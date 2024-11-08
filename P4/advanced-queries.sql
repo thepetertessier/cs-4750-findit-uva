@@ -252,6 +252,21 @@ RETURN (
 GO
 
 --Function 3:
+CREATE FUNCTION GetUserBadges (@computing_id VARCHAR(7))
+RETURNS TABLE
+AS
+RETURN (
+    SELECT 
+        b.badge_id, 
+        b.[name] AS badge_name, 
+        b.[description], 
+        b.icon, 
+        ub.datetime_earned
+    FROM User_Earns_Badge ub
+    JOIN Badge b ON ub.badge_id = b.badge_id
+    WHERE ub.computing_id = @computing_id
+);
+GO
 
 
 --View 1a
@@ -412,19 +427,3 @@ SELECT computing_id, [name], email, CONVERT(VARCHAR(MAX), DECRYPTBYKEY(phone_num
 FROM [User];
 
 CLOSE SYMMETRIC KEY PhoneKey;
-
-CREATE FUNCTION GetUserBadges (@computing_id VARCHAR(7))
-RETURNS TABLE
-AS
-RETURN (
-    SELECT 
-        b.badge_id, 
-        b.[name] AS badge_name, 
-        b.[description], 
-        b.icon, 
-        ub.datetime_earned
-    FROM User_Earns_Badge ub
-    JOIN Badge b ON ub.badge_id = b.badge_id
-    WHERE ub.computing_id = @computing_id
-);
-GO
