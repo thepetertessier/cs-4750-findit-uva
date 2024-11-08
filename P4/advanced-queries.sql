@@ -427,3 +427,29 @@ SELECT computing_id, [name], email, CONVERT(VARCHAR(MAX), DECRYPTBYKEY(phone_num
 FROM [User];
 
 CLOSE SYMMETRIC KEY PhoneKey;
+
+
+-- Indices
+
+--To find user's contact information for any type of communication
+CREATE NONCLUSTERED INDEX IX_User_Email
+    ON [User] (email);
+GO
+
+-- To find recent items posted on a certain category
+-- Likely to be the most common search when looking for an item
+CREATE NONCLUSTERED INDEX IX_Item_CategoryID
+    ON [Item] (category_id, datetime_posted);
+GO
+
+-- Used mainly to search for items at a specific location.  Likely will be used for people to find their lost items
+CREATE NONCLUSTERED INDEX IX_Item_Location
+    ON [Item] ([location]);
+GO
+
+-- 
+
+
+
+
+
