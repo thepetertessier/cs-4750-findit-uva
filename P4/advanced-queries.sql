@@ -216,7 +216,52 @@ GO
 -- SELECT @update_success AS UpdateSuccess;
 
 --Function 1:
+CREATE FUNCTION GetUserReportedItems (@computing_id VARCHAR(7))
+RETURNS TABLE
+AS
+RETURN (
+    SELECT 
+        item_id, 
+        item_name, 
+        [description], 
+        [location], 
+        datetime_posted 
+    FROM Item
+    WHERE reporter_id = @computing_id
+);
+GO
 
 --Function 2:
+CREATE FUNCTION GetPendingFoundReports ()
+RETURNS TABLE
+AS
+RETURN (
+    SELECT 
+        fr.found_report_id, 
+        fr.item_id, 
+        i.item_name, 
+        fr.computing_id, 
+        fr.datetime_reported, 
+        fr.[status]
+    FROM Found_Report fr
+    JOIN Item i ON fr.item_id = i.item_id
+    WHERE fr.[status] = 'Pending'
+);
+GO
 
 --Function 3:
+CREATE FUNCTION GetUserBadges (@computing_id VARCHAR(7))
+RETURNS TABLE
+AS
+RETURN (
+    SELECT 
+        b.badge_id, 
+        b.[name] AS badge_name, 
+        b.[description], 
+        b.icon, 
+        ub.datetime_earned
+    FROM User_Earns_Badge ub
+    JOIN Badge b ON ub.badge_id = b.badge_id
+    WHERE ub.computing_id = @computing_id
+);
+GO
