@@ -218,10 +218,55 @@ GO
 -- SELECT @update_success AS UpdateSuccess;
 
 --Function 1:
+CREATE FUNCTION GetUserReportedItems (@computing_id VARCHAR(7))
+RETURNS TABLE
+AS
+RETURN (
+    SELECT 
+        item_id, 
+        item_name, 
+        [description], 
+        [location], 
+        datetime_posted 
+    FROM Item
+    WHERE reporter_id = @computing_id
+);
+GO
 
 --Function 2:
+CREATE FUNCTION GetPendingFoundReports ()
+RETURNS TABLE
+AS
+RETURN (
+    SELECT 
+        fr.found_report_id, 
+        fr.item_id, 
+        i.item_name, 
+        fr.computing_id, 
+        fr.datetime_reported, 
+        fr.[status]
+    FROM Found_Report fr
+    JOIN Item i ON fr.item_id = i.item_id
+    WHERE fr.[status] = 'Pending'
+);
+GO
 
 --Function 3:
+CREATE FUNCTION GetUserBadges (@computing_id VARCHAR(7))
+RETURNS TABLE
+AS
+RETURN (
+    SELECT 
+        b.badge_id, 
+        b.[name] AS badge_name, 
+        b.[description], 
+        b.icon, 
+        ub.datetime_earned
+    FROM User_Earns_Badge ub
+    JOIN Badge b ON ub.badge_id = b.badge_id
+    WHERE ub.computing_id = @computing_id
+);
+GO
 
 
 --View 1a
@@ -382,4 +427,29 @@ SELECT computing_id, [name], email, CONVERT(VARCHAR(MAX), DECRYPTBYKEY(phone_num
 FROM [User];
 
 CLOSE SYMMETRIC KEY PhoneKey;
+
+
+-- Indices
+
+--To find user's contact information for any type of communication
+CREATE NONCLUSTERED INDEX IX_User_Email
+    ON [User] (email);
+GO
+
+-- To find recent items posted on a certain category
+-- Likely to be the most common search when looking for an item
+CREATE NONCLUSTERED INDEX IX_Item_CategoryID
+    ON [Item] (category_id, datetime_posted);
+GO
+
+-- Used mainly to search for items at a specific location.  Likely will be used for people to find their lost items
+CREATE NONCLUSTERED INDEX IX_Item_Location
+    ON [Item] ([location]);
+GO
+
+-- 
+
+
+
+
 
